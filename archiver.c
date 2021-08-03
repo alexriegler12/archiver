@@ -166,6 +166,29 @@ struct archive* open_existing_archive(U_CHAR* path){
 	return arc;
 
 }
+U_CHAR** getFileList(struct archive* arc,U_INT32* num){
+	U_CHAR** ret;
+	U_CHAR nambuf[257];
+	U_INT32 i;
+	struct archeader hd;
+	struct fileheader fh;
+	fseek(arc->arcfile,0,SEEK_SET);
+	loadHeader(arc->arcfile,&hd);
+	ret=(U_CHAR**)malloc(hd.numfiles*sizeof(U_CHAR*));
+	*num=hd.numfiles;
+	for(i=0;i<hd.numfiles;i++){
+		loadFileHeader(arc->arcfile,&fh);
+		fread(nambuf,1,fh.namelen,arc->arcfile);
+		nambuf[fh.namelen]=0;
+		/*printf("%s\n",nambuf);*/
+		ret[i]=(U_CHAR*)malloc((fh.namelen+1)*sizeof(U_CHAR));
+		strcpy(ret[i],nambuf);
+		/*printf("%s\n",ret[i]);*/
+		fseek(arc->arcfile,fh.filelen,SEEK_CUR);
+	}
+	return ret;
+
+}
 U_INT32 close_archive(struct archive* arc){
 	fclose(arc->arcfile);
 	free(arc);

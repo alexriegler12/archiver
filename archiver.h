@@ -24,5 +24,5 @@ U_INT32 add_archive(struct archive* arc,U_CHAR* fname);
 struct archive* open_existing_archive(U_CHAR* path);
 U_INT32 close_archive(struct archive* arc);
 U_INT32 extract_allFiles(struct archive* arc,U_CHAR* path);
-
+U_CHAR** getFileList(struct archive* arc,U_INT32* num);
 
